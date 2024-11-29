@@ -1060,6 +1060,13 @@ vim.cmd [[
 "set guicursor=
 ]]
 
+vim.cmd [[
+nnoremap gg gg0
+nnoremap G G$
+xnoremap gg gg0
+xnoremap G G$
+]]
+
 -- disable netrw at the very start of your init.lua
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
