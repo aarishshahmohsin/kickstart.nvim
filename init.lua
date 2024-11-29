@@ -43,7 +43,7 @@ What is Kickstart?
 
 Kickstart Guide:
 
-  TODO: The very first thing you should do is to run the command `:Tutor` in Neovim.
+   TODO: The very first thing you should do is to run the command `:Tutor` in Neovim.
 
     If you don't know what this means, type the following:
       - <escape key>
@@ -237,6 +237,12 @@ require('lazy').setup({
   --
   -- Use `opts = {}` to force a plugin to be loaded.
   --
+  --
+  { 'stevearc/oil.nvim' },
+
+  -- { 'luk400/vim-jukit' },
+
+  -- { 'luk400/vim-jukit' },
 
   -- Here is a more advanced example where we pass configuration
   -- options to `gitsigns.nvim`. This is equivalent to the following Lua:
@@ -279,7 +285,7 @@ require('lazy').setup({
         -- set icon mappings to true if you have a Nerd Font
         mappings = vim.g.have_nerd_font,
         -- If you are using a Nerd Font: set icons.keys to an empty table which will use the
-        -- default which-key.nvim defined Nerd Font icons, otherwise define a string table
+        -- default whick-key.nvim defined Nerd Font icons, otherwise define a string table
         keys = vim.g.have_nerd_font and {} or {
           Up = '<Up> ',
           Down = '<Down> ',
@@ -590,12 +596,11 @@ require('lazy').setup({
 
       -- Change diagnostic symbols in the sign column (gutter)
       -- if vim.g.have_nerd_font then
-      --   local signs = { ERROR = '', WARN = '', INFO = '', HINT = '' }
-      --   local diagnostic_signs = {}
+      --   local signs = { Error = '', Warn = '', Hint = '', Info = '' }
       --   for type, icon in pairs(signs) do
-      --     diagnostic_signs[vim.diagnostic.severity[type]] = icon
+      --     local hl = 'DiagnosticSign' .. type
+      --     vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
       --   end
-      --   vim.diagnostic.config { signs = { text = diagnostic_signs } }
       -- end
 
       -- LSP servers and clients are able to communicate to each other what features they support.
@@ -615,7 +620,9 @@ require('lazy').setup({
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
-        -- clangd = {},
+        -- clangd = {
+        --
+        -- },
         -- gopls = {},
         -- pyright = {},
         -- rust_analyzer = {},
@@ -789,9 +796,9 @@ require('lazy').setup({
 
           -- If you prefer more traditional completion keymaps,
           -- you can uncomment the following lines
-          --['<CR>'] = cmp.mapping.confirm { select = true },
-          --['<Tab>'] = cmp.mapping.select_next_item(),
-          --['<S-Tab>'] = cmp.mapping.select_prev_item(),
+          ['<CR>'] = cmp.mapping.confirm { select = true },
+          ['<Tab>'] = cmp.mapping.select_next_item(),
+          ['<S-Tab>'] = cmp.mapping.select_prev_item(),
 
           -- Manually trigger a completion from nvim-cmp.
           --  Generally you don't need this, because nvim-cmp will display
@@ -834,23 +841,32 @@ require('lazy').setup({
     end,
   },
 
-  { -- You can easily change to a different colorscheme.
-    -- Change the name of the colorscheme plugin below, and then
-    -- change the command in the config to whatever the name of that colorscheme is.
-    --
-    -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'folke/tokyonight.nvim',
-    priority = 1000, -- Make sure to load this before all the other start plugins.
-    init = function()
-      -- Load the colorscheme here.
-      -- Like many other themes, this one has different styles, and you could load
-      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
+  { 'Vigemus/iron.nvim' },
 
-      -- You can configure highlights by doing something like:
-      vim.cmd.hi 'Comment gui=none'
-    end,
-  },
+  { 'nvim-tree/nvim-tree.lua' },
+  --
+  -- { -- You can easily change to a different colorscheme.
+  --   -- Change the name of the colorscheme plugin below, and then
+  --   -- change the command in the config to whatever the name of that colorscheme is.
+  --   --
+  --   -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
+  --   -- 'Mofiqul/vscode.nvim',
+  --   -- 'nyoom-engineering/oxocarbon.nvim',
+  --   -- 'owickstrom/vim-colors-paramount',
+  --   -- 'ellisonleao/gruvbox.nvim',
+  --   -- 'ntk148v/komau.vim',
+  --   priority = 1000, -- Make sure to load this before all the other start plugins.
+  --   init = function()
+  --     -- Load the colorscheme here.
+  --     -- Like many other themes, this one has different styles, and you could load
+  --     -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
+  --     -- vim.cmd.colorscheme 'oxocarbon'
+  --     vim.cmd.colorscheme 'gruvbox'
+  --
+  --     -- You can configure highlights by doing something like:
+  --     vim.cmd.hi 'Comment gui=none'
+  --   end,
+  -- },
 
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
@@ -966,5 +982,94 @@ require('lazy').setup({
   },
 })
 
+require('oil').setup()
+vim.keymap.set('n', '-', '<CMD>Oil<CR>', { desc = 'Open parent directory' })
+
+-- require('vim-jukit').setup()
+--
+-- vim.
+
+local iron = require 'iron.core'
+
+iron.setup {
+  config = {
+    -- Whether a repl should be discarded or not
+    scratch_repl = true,
+    -- Your repl definitions come here
+    repl_definition = {
+      sh = {
+        -- Can be a table or a function that
+        -- returns a table (see below)
+        command = { 'zsh' },
+      },
+      python = {
+        command = { 'python3' }, -- or { "ipython", "--no-autoindent" }
+        format = require('iron.fts.common').bracketed_paste_python,
+      },
+    },
+    -- How the repl window will be displayed
+    -- See below for more information
+    repl_open_cmd = require('iron.view').split.vertical.botright(40),
+  },
+  -- Iron doesn't set keymaps by default anymore.
+  -- You can set them here or manually add keymaps to the functions in iron.core
+  keymaps = {
+    send_motion = '<space>sc',
+    visual_send = '<space>sv',
+    send_file = '<space>sf',
+    send_line = '<space>sl',
+    send_paragraph = '<space>sp',
+    send_until_cursor = '<space>su',
+    send_mark = '<space>sm',
+    mark_motion = '<space>mc',
+    mark_visual = '<space>mc',
+    remove_mark = '<space>md',
+    cr = '<space>s<cr>',
+    interrupt = '<space>s<space>',
+    exit = '<space>sq',
+    clear = '<space>cl',
+  },
+  -- If the highlight is on, you can change how it looks
+  -- For the available options, check nvim_set_hl
+  highlight = {
+    italic = true,
+  },
+  ignore_blank_lines = true, -- ignore blank lines when sending visual select lines
+}
+
+-- iron also has a list of commands, see :h iron-commands for all available commands
+vim.keymap.set('n', '<space>rs', '<cmd>IronRepl<cr>')
+vim.keymap.set('n', '<space>rr', '<cmd>IronRestart<cr>')
+vim.keymap.set('n', '<space>rf', '<cmd>IronFocus<cr>')
+vim.keymap.set('n', '<space>rh', '<cmd>IronHide<cr>')
+
+vim.cmd [[
+set ts=4 
+set sw=4
+set autoindent
+set smartindent
+set relativenumber
+set nohlsearch
+]]
+
+vim.cmd [[
+"Righlight Normal guibg=none
+"highlight NonText guibg=none
+"highlight Normal ctermbg=none
+"highlight NonText ctermbg=none
+"set guicursor=
+]]
+
+-- disable netrw at the very start of your init.lua
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
+-- optionally enable 24-bit colour
+vim.opt.termguicolors = true
+
+-- OR setup with some options
+require('nvim-tree').setup {}
+
 -- The line beneath this is called `modeline`. See `:help modeline`
+--
 -- vim: ts=2 sts=2 sw=2 et
